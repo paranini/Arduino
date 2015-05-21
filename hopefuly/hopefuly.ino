@@ -72,21 +72,23 @@ float getTemp()
   byte data[12];
   byte addr[8];
   
-  if (!ds.search(addr))
-  {
-    ds.reset_search();
-  }
-  if (OneWire::crc8(addr, 7) != addr[7])
-  {
-    Serial.println("CRC is not valad!");
-    return -1000;
-  }
-  
-  if (addr[0] != 0x10 && addr[0] != 0x28)
-  {
-    Serial.print("Device is not recognized!");
-    return -1000;
-  }
+  if ( !ds.search(addr)) {
+//no more sensors on chain, reset search
+ds.reset_search();
+return -1000;
+}
+
+if ( OneWire::crc8( addr, 7) != addr[7]) {
+Serial.println("CRC is not valid!");
+return -1000;
+}
+
+if ( addr[0] != 0x10 && addr[0] != 0x28) {
+Serial.print("Device is not recognized");
+return -1000;
+}
+
+
   
   ds.reset();
   ds.select(addr);
